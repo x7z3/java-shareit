@@ -44,5 +44,5 @@ public class Booking {
 
     @NotBlank
     @Column(name = "status", nullable = false)
-    private Status status;
+    private BookingStatus status;
 }
