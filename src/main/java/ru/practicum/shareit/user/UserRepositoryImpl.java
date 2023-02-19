@@ -16,7 +16,6 @@ public class UserRepositoryImpl extends SimpleJpaRepository<User, Integer> imple
 
     @Override
     public User create(User user) {
-        emailShouldNotExist(user);
         return super.save(user);
     }
 

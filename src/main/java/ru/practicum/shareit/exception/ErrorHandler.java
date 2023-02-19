@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import ru.practicum.shareit.booking.BookingsNotFoundException;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
+import ru.practicum.shareit.booking.exception.OwnerBookingException;
+import ru.practicum.shareit.booking.exception.WrongItemOwnerException;
 import ru.practicum.shareit.item.exception.ChangingItemOwnerException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
@@ -23,13 +27,31 @@ public class ErrorHandler {
     @Nullable
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<ErrorEntity> sqlException(final SQLException e, WebRequest request) {
-        return getErrorEntity(e.getMessage(), HttpStatus.BAD_REQUEST, request);
+        return getErrorEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @Nullable
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorEntity> validationException(final ConstraintViolationException e, WebRequest request) {
         return getErrorEntity(e.getMessage(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Nullable
+    @ExceptionHandler(BookingsNotFoundException.class)
+    public ResponseEntity<ErrorEntity> bookingsNotFoundException(final BookingsNotFoundException e, WebRequest request) {
+        return getErrorEntity(e.getMessage(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @Nullable
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ErrorEntity> bookingNotFoundException(final BookingNotFoundException e, WebRequest request) {
+        return getErrorEntity(e.getMessage(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @Nullable
+    @ExceptionHandler(WrongItemOwnerException.class)
+    public ResponseEntity<ErrorEntity> wrongItemOwnerException(final WrongItemOwnerException e, WebRequest request) {
+        return getErrorEntity(e.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
     @Nullable
@@ -60,6 +82,12 @@ public class ErrorHandler {
     @ExceptionHandler(ChangingItemOwnerException.class)
     public ResponseEntity<ErrorEntity> changingItemOwnerException(final ChangingItemOwnerException e, WebRequest request) {
         return getErrorEntity(e.getMessage(), HttpStatus.FORBIDDEN, request);
+    }
+
+    @Nullable
+    @ExceptionHandler(OwnerBookingException.class)
+    public ResponseEntity<ErrorEntity> ownerBookingException(final OwnerBookingException e, WebRequest request) {
+        return getErrorEntity(e.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
     private ResponseEntity<ErrorEntity> getErrorEntity(String message, HttpStatus status, WebRequest request) {
