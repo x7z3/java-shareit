@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.exception.XSharerUserIdHeaderNotFoundException;
@@ -19,7 +20,7 @@ public class BookingController {
     @PostMapping
     public BookingDto bookItem(
             @RequestBody BookingDto bookingDto,
-            @RequestHeader(value = "X-Sharer-User-Id") Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         bookingDto.setStatus(BookingStatus.WAITING);
         return bookingService.bookItem(
@@ -30,7 +31,7 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public BookingDto changeBookingStatus(
             @PathVariable Integer bookingId, @RequestParam boolean approved,
-            @RequestHeader(value = "X-Sharer-User-Id") Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         return bookingService.approveBooking(
                 bookingId, approved, sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new)
@@ -40,7 +41,7 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getBookings(
             @RequestParam(required = false, defaultValue = "ALL") String state,
-            @RequestHeader(value = "X-Sharer-User-Id") Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         BookingState bookingState = getBookingState(state);
         return bookingService.getBookings(bookingState, sharerUserId.orElse(null));
@@ -49,7 +50,7 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(
             @RequestParam(required = false, defaultValue = "ALL") String state,
-            @RequestHeader(value = "X-Sharer-User-Id") Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         BookingState bookingState = getBookingState(state);
         return bookingService.getOwnerBookings(bookingState, sharerUserId.orElse(null));
@@ -58,7 +59,7 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     public BookingDto getBooking(
             @PathVariable Integer bookingId,
-            @RequestHeader(value = "X-Sharer-User-Id") Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         return bookingService.getBooking(bookingId, sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new));
     }

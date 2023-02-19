@@ -10,7 +10,7 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserMapper;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BookingMapper {
+public final class BookingMapper {
     public static BookingDto toBookingDto(Booking booking) {
         if (booking == null) return null;
         return new BookingDto(
