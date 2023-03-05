@@ -2,11 +2,23 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.BookingState;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.comment.CommentMapper;
+import ru.practicum.shareit.comment.CommentRepository;
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +30,8 @@ import static ru.practicum.shareit.item.ItemMapper.toItemDto;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
+    private final BookingRepository bookingRepository;
 
     @Override
     @Transactional
@@ -47,18 +61,56 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllItems(Integer sharerUserId) {
-        return itemRepository.getAll(sharerUserId).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    public List<ItemDto> getAllItems(Integer userId) {
+        List<Item> items = itemRepository.getAll(userId);
+        List<ItemDto> itemDtos = new ArrayList<>();
+        for (Item item : items) {
+            itemDtos.add(
+                    getItem(item.getId(), userId)
+            );
+        }
+        return itemDtos;
     }
 
     @Override
-    public ItemDto getItem(int itemId) {
-        return toItemDto(itemRepository.get(itemId));
+    public ItemDto getItem(Integer itemId, Integer userId) {
+        List<Booking> lastNextBookings = bookingRepository.getLastNextBooking(itemId, userId);
+        List<CommentDto> commentDtos = commentRepository.getItemComments(itemId)
+                .stream().map(CommentMapper::toCommentDto).collect(Collectors.toList());
+        return toItemDto(itemRepository.get(itemId),
+                commentDtos,
+                BookingMapper.toBookingDto(lastNextBookings.get(0)),
+                BookingMapper.toBookingDto(lastNextBookings.get(1))
+        );
     }
 
     @Override
     public List<ItemDto> searchItem(String searchText) {
         return itemRepository.search(searchText).stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto addItemComment(CommentDto commentDto, Integer userId) {
+        Integer itemId = commentDto.getItemId();
+        throwIfUserDidntBookItem(itemId, userId);
+
+        Item item = itemRepository.get(itemId);
+        List<Booking> itemBookings = bookingRepository.getBookingsByItems(BookingState.PAST, List.of(item));
+
+        if (itemBookings.isEmpty())
+            throw new ShareItException("No bookings for selected item");
+
+        User user = userRepository.getUser(userId);
+        Comment comment = CommentMapper.toComment(commentDto, item, user);
+        Comment createdComment = commentRepository.addComment(comment);
+        return CommentMapper.toCommentDto(createdComment);
+    }
+
+    private void throwIfUserDidntBookItem(Integer itemId, Integer userId) {
+        List<Booking> userItemBookings = bookingRepository.getBookingsBy(itemId, userId);
+        if (userItemBookings.isEmpty()) throw new BookingNotFoundException(
+                String.format("User's (ID=%s) booking of item with ID=%s was not found ", userId, itemId)
+        );
     }
 
     private User findOwner(ItemDto itemDto) {
