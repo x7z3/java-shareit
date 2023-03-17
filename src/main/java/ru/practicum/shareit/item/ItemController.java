@@ -20,7 +20,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(
-            @RequestBody ItemDto itemDto,
+            @Valid @RequestBody ItemDto itemDto,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         itemDto.setOwnerId(sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new));
@@ -35,7 +35,7 @@ public class ItemController {
     @PatchMapping("/{id}")
     public ItemDto patchItem(
             @PathVariable("id") int id,
-            @RequestBody @Valid ItemDto itemDto,
+            @RequestBody ItemDto itemDto,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         itemDto.setId(id);

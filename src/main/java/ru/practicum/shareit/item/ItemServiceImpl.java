@@ -14,6 +14,8 @@ import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
@@ -32,12 +34,14 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     @Transactional
     public ItemDto createItem(ItemDto itemDto) {
         User owner = findOwner(itemDto);
-        return toItemDto(itemRepository.create(toItem(itemDto, owner)));
+        ItemRequest itemRequest = getItemRequest(itemDto);
+        return toItemDto(itemRepository.create(toItem(itemDto, owner, itemRequest)));
     }
 
     @Override
@@ -50,14 +54,16 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto updateItem(ItemDto itemDto) {
         User owner = findOwner(itemDto);
-        return toItemDto(itemRepository.update(toItem(itemDto, owner)));
+        ItemRequest itemRequest = getItemRequest(itemDto);
+        return toItemDto(itemRepository.update(toItem(itemDto, owner, itemRequest)));
     }
 
     @Override
     @Transactional
     public ItemDto patchItem(ItemDto itemDto) {
         User owner = findOwner(itemDto);
-        return toItemDto(itemRepository.patch(toItem(itemDto, owner)));
+        ItemRequest itemRequest = getItemRequest(itemDto);
+        return toItemDto(itemRepository.patch(toItem(itemDto, owner, itemRequest)));
     }
 
     @Override
@@ -95,7 +101,7 @@ public class ItemServiceImpl implements ItemService {
         throwIfUserDidntBookItem(itemId, userId);
 
         Item item = itemRepository.get(itemId);
-        List<Booking> itemBookings = bookingRepository.getBookingsByItems(BookingState.PAST, List.of(item));
+        List<Booking> itemBookings = bookingRepository.getBookingsByItems(BookingState.PAST, List.of(item), null, null);
 
         if (itemBookings.isEmpty())
             throw new ShareItException("No bookings for selected item");
@@ -104,6 +110,13 @@ public class ItemServiceImpl implements ItemService {
         Comment comment = CommentMapper.toComment(commentDto, item, user);
         Comment createdComment = commentRepository.addComment(comment);
         return CommentMapper.toCommentDto(createdComment);
+    }
+
+    private ItemRequest getItemRequest(ItemDto itemDto) {
+        ItemRequest itemRequest = null;
+        if (itemDto.getRequestId() != null)
+            itemRequest = itemRequestRepository.getItemRequest(itemDto.getRequestId());
+        return itemRequest;
     }
 
     private void throwIfUserDidntBookItem(Integer itemId, Integer userId) {

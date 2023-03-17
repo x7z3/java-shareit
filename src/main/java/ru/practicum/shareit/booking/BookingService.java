@@ -9,9 +9,9 @@ public interface BookingService {
 
     BookingDto approveBooking(Integer bookingId, boolean approved, Integer userId);
 
-    List<BookingDto> getBookings(BookingState state, Integer userId);
+    List<BookingDto> getBookings(BookingState state, Integer userId, Integer from, Integer size);
 
     BookingDto getBooking(Integer bookingId, Integer userId);
 
-    List<BookingDto> getOwnerBookings(BookingState state, Integer userId);
+    List<BookingDto> getOwnerBookings(BookingState state, Integer userId, Integer from, Integer size);
 }
