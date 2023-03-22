@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import static org.springframework.data.jpa.domain.Specification.where;
 
+@Repository
 public class BookingRepositoryImpl extends SimpleJpaRepository<Booking, Integer> implements BookingRepository {
     private static final String STATUS_FIELD_NAME = "status";
     private static final String END_TIME_FIELD_NAME = "endTime";
