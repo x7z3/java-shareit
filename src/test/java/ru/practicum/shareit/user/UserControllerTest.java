@@ -14,7 +14,6 @@ import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import javax.validation.ConstraintViolationException;
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
