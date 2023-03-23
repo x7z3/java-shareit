@@ -51,7 +51,7 @@ class UserControllerTest {
 
     @Test
     void createUser_whenUserAlreadyExists_thenThrowException() throws Exception {
-        Mockito.when(userService.createUser(isA(UserDto.class))).thenThrow(UserAlreadyExistsException.class);
+        Mockito.when(userService.createUser(isA(UserDto.class))).thenThrow(new UserAlreadyExistsException(new User()));
 
         mockMvc.perform(
                 post("/users")
@@ -119,7 +119,7 @@ class UserControllerTest {
 
     @Test
     void whenNotExistingUserAcquired_thenThrowException() throws Exception {
-        Mockito.when(userService.getUser(anyInt())).thenThrow(UserNotFoundException.class);
+        Mockito.when(userService.getUser(anyInt())).thenThrow(new UserNotFoundException());
         mockMvc.perform(
                 get("/users/11")
         ).andExpect(status().isNotFound());

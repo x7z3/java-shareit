@@ -11,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
+import ru.practicum.shareit.booking.exception.RestrictedBookingAccessException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -131,5 +133,31 @@ class BookingControllerTest {
         ).andExpect(status().isOk());
 
         Mockito.verify(bookingService, Mockito.times(1)).getBooking(anyInt(), anyInt());
+    }
+
+    @Test
+    void getBooking_whenNotFound_throwException() throws Exception {
+        Mockito.when(
+                bookingService.getBooking(anyInt(), anyInt())
+        ).thenThrow(new BookingNotFoundException(1));
+
+        mockMvc.perform(
+                get("/bookings/1")
+                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getBooking_whenWrongBooking_throwException() throws Exception {
+        Mockito.when(
+                bookingService.getBooking(anyInt(), anyInt())
+        ).thenThrow(new RestrictedBookingAccessException("Mocked exception"));
+
+        mockMvc.perform(
+                get("/bookings/1")
+                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+
+        ).andExpect(status().isBadRequest());
     }
 }
