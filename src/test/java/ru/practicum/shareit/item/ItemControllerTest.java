@@ -10,8 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.booking.exception.WrongItemOwnerException;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.exception.ChangingItemOwnerException;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -96,6 +99,30 @@ class ItemControllerTest {
     }
 
     @Test
+    void patchItem_throwExceptionChangingItemOwnerException() throws Exception {
+        Mockito.when(itemService.patchItem(isA(ItemDto.class))).thenThrow(ChangingItemOwnerException.class);
+
+        mockMvc.perform(
+                patch("/items/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, "1")
+                        .content(mapper.writeValueAsString(itemDto))
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    void patchItem_throwExceptionWrongItemOwner() throws Exception {
+        Mockito.when(itemService.patchItem(isA(ItemDto.class))).thenThrow(WrongItemOwnerException.class);
+
+        mockMvc.perform(
+                patch("/items/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, "1")
+                        .content(mapper.writeValueAsString(itemDto))
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
     void getAllItems() throws Exception {
         Mockito.when(itemService.getAllItems(anyInt())).thenReturn(List.of(itemDto));
 
@@ -117,6 +144,16 @@ class ItemControllerTest {
         ).andExpect(status().isOk());
 
         Mockito.verify(itemService, Mockito.times(1)).getItem(1, 1);
+    }
+
+    @Test
+    void getItem_whenWrongItemAcquired_thenThrowException() throws Exception {
+        Mockito.when(itemService.getItem(anyInt(), anyInt())).thenThrow(ItemNotFoundException.class);
+
+        mockMvc.perform(
+                get("/items/11")
+                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+        ).andExpect(status().isNotFound());
     }
 
     @Test

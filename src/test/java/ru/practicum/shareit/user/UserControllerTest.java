@@ -10,7 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 
+import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -44,6 +48,28 @@ class UserControllerTest {
         ).andExpect(status().isOk());
 
         Mockito.verify(userService, Mockito.times(1)).createUser(isA(UserDto.class));
+    }
+
+    @Test
+    void createUser_whenUserAlreadyExists_thenThrowException() throws Exception {
+        Mockito.when(userService.createUser(isA(UserDto.class))).thenThrow(UserAlreadyExistsException.class);
+
+        mockMvc.perform(
+                post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(userDto))
+        ).andExpect(status().isConflict());
+    }
+
+    @Test
+    void createUser_whenWrongEntity_thenThrowException() throws Exception {
+        Mockito.when(userService.createUser(isA(UserDto.class))).thenThrow(ConstraintViolationException.class);
+
+        mockMvc.perform(
+                post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(userDto))
+        ).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -90,5 +116,13 @@ class UserControllerTest {
         ).andExpect(status().isOk());
 
         Mockito.verify(userService, Mockito.times(1)).patchUser(isA(UserDto.class));
+    }
+
+    @Test
+    void whenNotExistingUserAcquired_thenThrowException() throws Exception {
+        Mockito.when(userService.getUser(anyInt())).thenThrow(UserNotFoundException.class);
+        mockMvc.perform(
+                get("/users/11")
+        ).andExpect(status().isNotFound());
     }
 }

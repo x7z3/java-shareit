@@ -63,6 +63,73 @@ class BookingRepositoryTest {
     }
 
     @Test
+    void get_whenStateIsPast_thenSuccess() {
+        LocalDateTime startTime = LocalDateTime.now().minus(Duration.ofHours(2));
+        LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        List<Booking> bookings = bookingRepository.get(BookingState.PAST, requestUser.getId(), null, null);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenStateIsCurrent_thenSuccess() {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        List<Booking> bookings = bookingRepository.get(BookingState.CURRENT, requestUser.getId(), null, null);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenStateIsFuture_thenSuccess() {
+        LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+        LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        List<Booking> bookings = bookingRepository.get(BookingState.FUTURE, requestUser.getId(), null, null);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenStateIsRejected_thenSuccess() {
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.REJECTED));
+        List<Booking> bookings = bookingRepository.get(BookingState.REJECTED, requestUser.getId(), null, null);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenStateIsWaiting_thenSuccess() {
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING));
+        List<Booking> bookings = bookingRepository.get(BookingState.WAITING, requestUser.getId(), 0, 10);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenNoState_thenSuccess() {
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        List<Booking> bookings = bookingRepository.get(BookingState.ALL, requestUser.getId(), 0, 10);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenNoStateNoPagination_thenSuccess() {
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        List<Booking> bookings = bookingRepository.get(BookingState.ALL, requestUser.getId(), null, null);
+        assertFalse(bookings.isEmpty());
+    }
+
+    @Test
+    void get_whenNoStatOnlyFrom_thenThrowNpe() {
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        assertThrows(NullPointerException.class, () -> bookingRepository.get(BookingState.ALL, requestUser.getId(), 0, null));
+    }
+
+    @Test
+    void get_whenNoStatOnlySize_thenThrowNpe() {
+        bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.APPROVED));
+        assertThrows(NullPointerException.class, () -> bookingRepository.get(BookingState.ALL, requestUser.getId(), null, 10));
+    }
+
+    @Test
     void get_whenGetBookingById_thenBookingIsReturned() {
         Booking booking = bookingRepository.createBooking(new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING));
         Booking returnedBooking = bookingRepository.get(booking.getId());

@@ -64,6 +64,7 @@ class ItemRepositoryTest {
     void update() {
         Item update = itemRepository.update(item);
         assertNotNull(update);
+        assertEquals(item, update);
     }
 
     @Test

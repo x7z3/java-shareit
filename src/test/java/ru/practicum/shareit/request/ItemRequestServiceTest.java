@@ -72,6 +72,28 @@ class ItemRequestServiceTest {
     }
 
     @Test
+    void createItemRequest_whenCreatedNullAndItemIdNotNull_thenSuccess() {
+        Mockito.when(userRepository.getUser(anyInt())).thenReturn(requestor);
+        Mockito.when(itemRepository.get(anyInt())).thenReturn(item);
+        Mockito.when(itemRequestRepository.createItemRequest(isA(ItemRequest.class))).thenReturn(itemRequest);
+
+        ItemRequestDto itemRequestDto = ItemRequestDto.builder()
+                .id(1)
+                .itemId(1)
+                .itemName("item name")
+                .description("description")
+                .requestorId(1)
+                .build();
+
+        ItemRequestDto resultItemRequest = itemRequestService.createItemRequest(itemRequestDto);
+        assertNotNull(resultItemRequest);
+
+        Mockito.verify(userRepository, Mockito.times(1)).getUser(anyInt());
+        Mockito.verify(itemRepository, Mockito.times(1)).get(anyInt());
+        Mockito.verify(itemRequestRepository, Mockito.times(1)).createItemRequest(isA(ItemRequest.class));
+    }
+
+    @Test
     void createItemRequest_throwIfRequestorIdIsNull() {
         ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .id(1)

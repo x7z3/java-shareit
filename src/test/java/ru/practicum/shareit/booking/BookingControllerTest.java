@@ -91,6 +91,17 @@ class BookingControllerTest {
     }
 
     @Test
+    void getBookings_whenWrongState_thenThrowException() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/bookings")
+                        .queryParam("from", "1")
+                        .queryParam("size", "1")
+                        .queryParam("state", "XXX")
+                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void getOwnerBookings() throws Exception {
         Mockito.when(
                 bookingService.getOwnerBookings(isA(BookingState.class), anyInt(), anyInt(), anyInt())
