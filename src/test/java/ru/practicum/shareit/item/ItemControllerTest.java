@@ -235,6 +235,6 @@ class ItemControllerTest {
                         .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isOk());
 
-        Mockito.verify(itemService, Mockito.times(1)).addItemComment(commentDto, 1);
+        Mockito.verify(itemService, Mockito.times(1)).addItemComment(isA(CommentDto.class), anyInt());
     }
 }

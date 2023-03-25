@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -23,11 +24,17 @@ class BookingRepositoryTest {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
 
-    private final LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
-    private final LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private User itemUser;
     private User requestUser;
     private Item item;
+
+    @BeforeEach
+    void setUp() {
+        startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+        endTime = startTime.plus(Duration.ofHours(1));
+    }
 
     @Autowired
     public BookingRepositoryTest(BookingRepository bookingRepository, UserRepository userRepository, ItemRepository itemRepository) {

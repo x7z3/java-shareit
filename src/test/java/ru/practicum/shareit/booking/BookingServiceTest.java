@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,14 @@ import static ru.practicum.shareit.booking.BookingMapper.toBookingDto;
 
 @SpringBootTest
 class BookingServiceTest {
-    private final User itemUser = new User(2, "itemUser", "itemUser@mail.ru");
-    private final Item item = new Item(1, "name", "description", true, itemUser, null);
-    private final User requestUser = new User(3, "requestUser", "requestUser@mail.ru");
-    private final LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
-    private final LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
-    private final Booking booking = new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING);
-    private final User user = new User(1, "user", "user1@mail.ru");
-    private BookingDto bookingDto = BookingDto.builder().itemId(1).start(startTime).end(endTime).bookerId(1).build();
+    private User itemUser;
+    private Item item;
+    private User requestUser;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Booking booking;
+    private User user;
+    private BookingDto bookingDto;
 
     @Autowired
     private BookingService bookingService;
@@ -46,6 +47,18 @@ class BookingServiceTest {
 
     @MockBean
     private ItemRepository itemRepository;
+
+    @BeforeEach
+    void setUp() {
+        itemUser = new User(2, "itemUser", "itemUser@mail.ru");
+        item = new Item(1, "name", "description", true, itemUser, null);
+        requestUser = new User(3, "requestUser", "requestUser@mail.ru");
+        startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+        endTime = startTime.plus(Duration.ofHours(1));
+        booking = new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING);
+        user = new User(1, "user", "user1@mail.ru");
+        bookingDto = BookingDto.builder().itemId(1).start(startTime).end(endTime).bookerId(1).build();
+    }
 
     @Test
     void bookItem_whenBookWithCorrectUserAndItem_thenItemBooked() {

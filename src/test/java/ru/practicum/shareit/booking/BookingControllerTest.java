@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +36,17 @@ class BookingControllerTest {
     @MockBean
     private BookingService bookingService;
 
-    private final LocalDateTime now = LocalDateTime.now();
+    private BookingDto bookingDto;
 
-    private final BookingDto bookingDto = BookingDto.builder()
-            .itemId(2)
-            .start(now)
-            .end(now.plus(Duration.ofSeconds(4)))
-            .build();
+    @BeforeEach
+    void setUp() {
+        LocalDateTime now = LocalDateTime.now();
+        bookingDto = BookingDto.builder()
+                .itemId(2)
+                .start(now)
+                .end(now.plus(Duration.ofSeconds(4)))
+                .build();
+    }
 
     @Test
     void bookItem() throws Exception {

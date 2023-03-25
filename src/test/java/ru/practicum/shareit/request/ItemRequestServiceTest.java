@@ -1,16 +1,13 @@
 package ru.practicum.shareit.request;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.practicum.shareit.booking.BookingStatus;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.User;
@@ -22,7 +19,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static ru.practicum.shareit.item.ItemMapper.toItemDto;
 
 @SpringBootTest
 class ItemRequestServiceTest {
@@ -45,17 +41,26 @@ class ItemRequestServiceTest {
             .created(LocalDateTime.now())
             .build();
 
-    private final User requestor = new User(1, "requestor", "requestor@mail.ru");
-    private final User itemUser = new User(2, "itemUser", "itemUser@mail.ru");
-    private final User requestUser = new User(3, "requestUser", "requestUser@mail.ru");
-    private final Item item = new Item(1, "name", "description", true, itemUser, null);
-    private final ItemDto itemDto = toItemDto(item);
-    private final ItemRequest itemRequest = new ItemRequest(1, "description", requestUser, item, LocalDateTime.now());
-    private final LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
-    private final LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
-    private final Booking booking = new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING);
-    private final User user = new User(1, "user", "user1@mail.ru");
-    private final BookingDto bookingDto = BookingDto.builder().itemId(1).start(startTime).end(endTime).bookerId(1).build();
+    private User requestor = new User(1, "requestor", "requestor@mail.ru");
+    private User itemUser = new User(2, "itemUser", "itemUser@mail.ru");
+    private User requestUser = new User(3, "requestUser", "requestUser@mail.ru");
+    private Item item = new Item(1, "name", "description", true, itemUser, null);
+    private ItemRequest itemRequest = new ItemRequest(1, "description", requestUser, item, LocalDateTime.now());
+    private LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+    private LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
+    private User user = new User(1, "user", "user1@mail.ru");
+
+    @BeforeEach
+    void setUp() {
+        requestor = new User(1, "requestor", "requestor@mail.ru");
+        itemUser = new User(2, "itemUser", "itemUser@mail.ru");
+        requestUser = new User(3, "requestUser", "requestUser@mail.ru");
+        item = new Item(1, "name", "description", true, itemUser, null);
+        itemRequest = new ItemRequest(1, "description", requestUser, item, LocalDateTime.now());
+        startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+        endTime = startTime.plus(Duration.ofHours(1));
+        user = new User(1, "user", "user1@mail.ru");
+    }
 
     @Test
     void createItemRequest() {

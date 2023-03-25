@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -49,16 +50,28 @@ class ItemServiceTest {
     @MockBean
     private ItemRequestRepository itemRequestRepository;
 
-    private final User itemUser = new User(2, "itemUser", "itemUser@mail.ru");
-    private final User requestUser = new User(3, "requestUser", "requestUser@mail.ru");
-    private final Item item = new Item(1, "name", "description", true, itemUser, null);
-    private final ItemDto itemDto = toItemDto(item);
-    private final ItemRequest itemRequest = new ItemRequest(1, "description", requestUser, item, LocalDateTime.now());
-    private final LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
-    private final LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
-    private final Booking booking = new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING);
-    private final User user = new User(1, "user", "user1@mail.ru");
-    private final BookingDto bookingDto = BookingDto.builder().itemId(1).start(startTime).end(endTime).bookerId(1).build();
+    private User itemUser;
+    private User requestUser;
+    private Item item;
+    private ItemDto itemDto;
+    private ItemRequest itemRequest;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Booking booking;
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        itemUser = new User(2, "itemUser", "itemUser@mail.ru");
+        requestUser = new User(3, "requestUser", "requestUser@mail.ru");
+        item = new Item(1, "name", "description", true, itemUser, null);
+        itemDto = toItemDto(item);
+        itemRequest = new ItemRequest(1, "description", requestUser, item, LocalDateTime.now());
+        startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+        endTime = startTime.plus(Duration.ofHours(1));
+        booking = new Booking(1, startTime, endTime, item, requestUser, BookingStatus.WAITING);
+        user = new User(1, "user", "user1@mail.ru");
+    }
 
     @Test
     void createItem() {

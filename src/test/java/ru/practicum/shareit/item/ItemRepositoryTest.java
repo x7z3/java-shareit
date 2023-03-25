@@ -24,8 +24,8 @@ class ItemRepositoryTest {
 
     private final ItemRepository itemRepository;
 
-    private final LocalDateTime startTime = LocalDateTime.now().plus(Duration.ofHours(1));
-    private final LocalDateTime endTime = startTime.plus(Duration.ofHours(1));
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
 
     private User itemUser;
     private User requestUser;
@@ -38,6 +38,9 @@ class ItemRepositoryTest {
         this.userRepository = userRepository;
         this.itemRepository = itemRepository;
         this.itemRequestRepository = itemRequestRepository;
+
+        startTime = LocalDateTime.now().plus(Duration.ofHours(1));
+        endTime = startTime.plus(Duration.ofHours(1));;
 
         itemUser = userRepository.create(new User(1, "itemUser", "itemUser@mail.ru"));
         requestUser = userRepository.create(new User(2, "requestUser", "requestUser@mail.ru"));

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,19 @@ class ItemRequestControllerTest {
 
     @MockBean
     private ItemRequestService itemRequestService;
-    private final ItemRequestDto itemRequestDto = ItemRequestDto.builder()
-            .id(1)
-            .itemId(1)
-            .itemName("item name")
-            .description("description")
-            .requestorId(1)
-            .created(LocalDateTime.now())
-            .build();
+    private ItemRequestDto itemRequestDto;
+
+    @BeforeEach
+    void setUp() {
+        itemRequestDto = ItemRequestDto.builder()
+                .id(1)
+                .itemId(1)
+                .itemName("item name")
+                .description("description")
+                .requestorId(1)
+                .created(LocalDateTime.now())
+                .build();
+    }
 
     @Test
     void createRequest() throws Exception {

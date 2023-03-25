@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -23,8 +24,14 @@ class UserServiceTest {
     @MockBean
     private UserRepository userRepository;
 
-    private final UserDto userDto = new UserDto(1, "name", "name@mail.ru");
-    private final User user = new User(1, "name", "name@mail.ru");
+    private UserDto userDto;
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        userDto = new UserDto(1, "name", "name@mail.ru");
+        user = new User(1, "name", "name@mail.ru");
+    }
 
     @Test
     void createUser() {
