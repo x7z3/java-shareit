@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import javax.persistence.EntityManager;
@@ -36,7 +35,6 @@ public class UserRepositoryImpl extends SimpleJpaRepository<User, Integer> imple
     public User patch(User user) {
         User foundUser = findUserById(user.getId());
         if (user.getEmail() != null) {
-            emailShouldNotExist(user);
             foundUser.setEmail(user.getEmail());
         }
         if (user.getName() != null) {
@@ -53,13 +51,6 @@ public class UserRepositoryImpl extends SimpleJpaRepository<User, Integer> imple
     @Override
     public User getUser(int userId) {
         return findUserById(userId);
-    }
-
-    private void emailShouldNotExist(User user) {
-        findOne((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("email"), user.getEmail()))
-                .ifPresent(u -> {
-                    throw new UserAlreadyExistsException(user);
-                });
     }
 
     private User findUserById(Integer userId) {

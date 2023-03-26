@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.exception.ChangingItemOwnerException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -80,6 +81,12 @@ public class ItemRepositoryImpl extends SimpleJpaRepository<Item, Integer> imple
                 criteriaBuilder.equal(root.get("available"), true);
 
         return super.findAll(where(nameLike).or(descriptionLike).and(availableTrue));
+    }
+
+    @Override
+    public List<Item> getItemByRequest(ItemRequest itemRequest) {
+        return findAll((root, query, criteriaBuilder) ->
+            criteriaBuilder.equal(root.get("itemRequest"), itemRequest));
     }
 
     private Item findItemById(Integer itemId) {

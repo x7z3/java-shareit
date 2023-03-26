@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
@@ -87,6 +88,12 @@ public class ErrorHandler {
     @Nullable
     @ExceptionHandler(OwnerBookingException.class)
     public ResponseEntity<ErrorEntity> ownerBookingException(final OwnerBookingException e, WebRequest request) {
+        return getErrorEntity(e.getMessage(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @Nullable
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorEntity> entityNotFoundException(final EntityNotFoundException e, WebRequest request) {
         return getErrorEntity(e.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 

@@ -1,17 +1,16 @@
 package ru.practicum.shareit.request;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-item-requests.
- */
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @ToString
@@ -30,7 +29,10 @@ public class ItemRequest {
     @ManyToOne(targetEntity = User.class)
     private User requestor;
 
-    @NotBlank
+    @ManyToOne(targetEntity = Item.class)
+    private Item item;
+
+    @NotNull
     @Column(name = "created")
     private LocalDateTime created;
 }

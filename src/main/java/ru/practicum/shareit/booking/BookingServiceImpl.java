@@ -77,18 +77,22 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getBookings(BookingState state, Integer userId) {
-        List<Booking> bookings = bookingRepository.get(state, userId);
+    public List<BookingDto> getBookings(BookingState state, Integer userId, Integer from, Integer size) {
+        throwIfPaginationParamsIncorrect(from, size);
+
+        List<Booking> bookings = bookingRepository.get(state, userId, from, size);
         if (bookings.isEmpty()) throw new BookingsNotFoundException(state, userId);
         return bookings.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingDto> getOwnerBookings(BookingState state, Integer userId) {
+    public List<BookingDto> getOwnerBookings(BookingState state, Integer userId, Integer from, Integer size) {
+        throwIfPaginationParamsIncorrect(from, size);
+
         List<Item> ownerItems = itemRepository.getAll(userId);
         if (ownerItems.isEmpty()) throw new BookingsNotFoundException(state, userId);
 
-        List<Booking> bookings = bookingRepository.getBookingsByItems(state, ownerItems);
+        List<Booking> bookings = bookingRepository.getBookingsByItems(state, ownerItems, from, size);
         if (bookings.isEmpty()) throw new BookingsNotFoundException(state, userId);
         return bookings.stream().map(BookingMapper::toBookingDto).collect(Collectors.toList());
     }
@@ -107,5 +111,10 @@ public class BookingServiceImpl implements BookingService {
         if (!userId.equals(bookerId) && !userId.equals(ownerId)) throw new BookingNotFoundException(
                 "No bookings found for current user"
         );
+    }
+
+    private void throwIfPaginationParamsIncorrect(Integer from, Integer size) {
+        if (from != null && size != null &&  (from < 0 || size < 0 || size == 0))
+            throw new ShareItException("Wrong pagination parameters was sent");
     }
 }

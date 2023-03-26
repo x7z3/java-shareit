@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.exception.XSharerUserIdHeaderNotFoundException;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto bookItem(
-            @RequestBody BookingDto bookingDto,
+            @Valid @RequestBody BookingDto bookingDto,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         bookingDto.setStatus(BookingStatus.WAITING);
@@ -30,7 +31,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingDto changeBookingStatus(
-            @PathVariable Integer bookingId, @RequestParam boolean approved,
+            @PathVariable Integer bookingId,
+            @RequestParam boolean approved,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         return bookingService.approveBooking(
@@ -40,20 +42,24 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getBookings(
+            @RequestParam(required = false) Integer from,
+            @RequestParam(required = false) Integer size,
             @RequestParam(required = false, defaultValue = "ALL") String state,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         BookingState bookingState = getBookingState(state);
-        return bookingService.getBookings(bookingState, sharerUserId.orElse(null));
+        return bookingService.getBookings(bookingState, sharerUserId.orElse(null), from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookings(
+            @RequestParam(required = false) Integer from,
+            @RequestParam(required = false) Integer size,
             @RequestParam(required = false, defaultValue = "ALL") String state,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         BookingState bookingState = getBookingState(state);
-        return bookingService.getOwnerBookings(bookingState, sharerUserId.orElse(null));
+        return bookingService.getOwnerBookings(bookingState, sharerUserId.orElse(null), from, size);
     }
 
     @GetMapping("/{bookingId}")

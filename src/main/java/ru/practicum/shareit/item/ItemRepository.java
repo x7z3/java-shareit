@@ -1,11 +1,10 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequest;
 
 import java.util.List;
 
-@Repository
 public interface ItemRepository {
     Item create(Item item);
 
@@ -20,4 +19,6 @@ public interface ItemRepository {
     Item patch(Item item);
 
     List<Item> getAll(Integer sharerUserId);
+
+    List<Item> getItemByRequest(ItemRequest itemRequest);
 }
