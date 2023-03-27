@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.util.Objects;
 
 @Setter
@@ -24,7 +23,6 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Email
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 

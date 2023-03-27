@@ -7,8 +7,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -26,19 +24,15 @@ public class Comment {
     @Column(name = "id", nullable = false, unique = true)
     private Integer id;
 
-    @NotBlank
     @Column(name = "text", nullable = false)
     private String text;
 
-    @NotNull
     @ManyToOne(targetEntity = Item.class)
     private Item item;
 
-    @NotNull
     @ManyToOne(targetEntity = User.class)
     private User user;
 
-    @NotNull
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 

@@ -6,8 +6,6 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Setter
@@ -24,15 +22,12 @@ public class Item {
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
-    @NotBlank
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotBlank
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "available", nullable = false)
     private Boolean available;
 

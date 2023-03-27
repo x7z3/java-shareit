@@ -7,7 +7,6 @@ import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.exception.XSharerUserIdHeaderNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(
-            @Valid @RequestBody ItemDto itemDto,
+            @RequestBody ItemDto itemDto,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         itemDto.setOwnerId(sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new));

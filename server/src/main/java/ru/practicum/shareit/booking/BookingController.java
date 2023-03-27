@@ -7,7 +7,6 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.exception.XSharerUserIdHeaderNotFoundException;
 
-import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +19,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto bookItem(
-            @Valid @RequestBody BookingDto bookingDto,
+            @RequestBody BookingDto bookingDto,
             @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         bookingDto.setStatus(BookingStatus.WAITING);

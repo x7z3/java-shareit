@@ -18,7 +18,6 @@ import ru.practicum.shareit.user.exception.UserNotFoundException;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -29,12 +28,6 @@ public class ErrorHandler {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<ErrorEntity> sqlException(final SQLException e, WebRequest request) {
         return getErrorEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
-    @Nullable
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorEntity> validationException(final ConstraintViolationException e, WebRequest request) {
-        return getErrorEntity(e.getMessage(), HttpStatus.BAD_REQUEST, request);
     }
 
     @Nullable
