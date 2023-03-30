@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.ShareItServer;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.RestrictedBookingAccessException;
@@ -58,7 +58,7 @@ class BookingControllerTest {
                 post("/bookings")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bookingDto))
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
         ).andExpect(status().isOk());
 
         Mockito.verify(bookingService, Mockito.times(1))
@@ -73,7 +73,7 @@ class BookingControllerTest {
 
         mockMvc.perform(patch("/bookings/1")
                 .queryParam("approved", "true")
-                .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
         ).andExpect(status().isOk());
 
         Mockito.verify(bookingService, Mockito.times(1))
@@ -90,7 +90,7 @@ class BookingControllerTest {
                 MockMvcRequestBuilders.get("/bookings")
                         .queryParam("from", "1")
                         .queryParam("size", "1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
         ).andExpect(status().isOk());
 
         Mockito.verify(bookingService, Mockito.times(1))
@@ -104,7 +104,7 @@ class BookingControllerTest {
                         .queryParam("from", "1")
                         .queryParam("size", "1")
                         .queryParam("state", "XXX")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
         ).andExpect(status().isBadRequest());
     }
 
@@ -118,7 +118,7 @@ class BookingControllerTest {
                 MockMvcRequestBuilders.get("/bookings/owner")
                         .queryParam("from", "1")
                         .queryParam("size", "1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
         ).andExpect(status().isOk());
 
         Mockito.verify(bookingService, Mockito.times(1))
@@ -133,7 +133,7 @@ class BookingControllerTest {
 
         mockMvc.perform(
                 get("/bookings/1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
 
         ).andExpect(status().isOk());
 
@@ -148,7 +148,7 @@ class BookingControllerTest {
 
         mockMvc.perform(
                 get("/bookings/1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
 
         ).andExpect(status().isNotFound());
     }
@@ -161,7 +161,7 @@ class BookingControllerTest {
 
         mockMvc.perform(
                 get("/bookings/1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 2)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 2)
 
         ).andExpect(status().isBadRequest());
     }

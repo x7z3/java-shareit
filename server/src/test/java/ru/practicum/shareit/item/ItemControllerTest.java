@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.ShareItServer;
 import ru.practicum.shareit.booking.exception.WrongItemOwnerException;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -67,7 +67,7 @@ class ItemControllerTest {
 
         mockMvc.perform(
                 post("/items")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(itemDto))
         ).andExpect(status().isOk());
@@ -106,7 +106,7 @@ class ItemControllerTest {
         mockMvc.perform(
                 patch("/items/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, "1")
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, "1")
                         .content(mapper.writeValueAsString(itemDto))
         ).andExpect(status().isOk());
 
@@ -130,7 +130,7 @@ class ItemControllerTest {
         mockMvc.perform(
                 patch("/items/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, "1")
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, "1")
                         .content(mapper.writeValueAsString(itemDto))
         ).andExpect(status().isNotFound());
     }
@@ -142,7 +142,7 @@ class ItemControllerTest {
         mockMvc.perform(
                 patch("/items/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, "1")
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, "1")
                         .content(mapper.writeValueAsString(itemDto))
         ).andExpect(status().isForbidden());
     }
@@ -154,7 +154,7 @@ class ItemControllerTest {
         mockMvc.perform(
                 patch("/items/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, "1")
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, "1")
                         .content(mapper.writeValueAsString(itemDto))
         ).andExpect(status().isForbidden());
     }
@@ -165,7 +165,7 @@ class ItemControllerTest {
 
         mockMvc.perform(
                 get("/items")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isOk());
 
         Mockito.verify(itemService, Mockito.times(1)).getAllItems(1);
@@ -177,7 +177,7 @@ class ItemControllerTest {
 
         mockMvc.perform(
                 get("/items/1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isOk());
 
         Mockito.verify(itemService, Mockito.times(1)).getItem(1, 1);
@@ -189,7 +189,7 @@ class ItemControllerTest {
 
         mockMvc.perform(
                 get("/items/11")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isNotFound());
     }
 
@@ -199,7 +199,7 @@ class ItemControllerTest {
 
         mockMvc.perform(
                 get("/items/11")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isNotFound());
     }
 
@@ -209,7 +209,7 @@ class ItemControllerTest {
 
         mockMvc.perform(
                 get("/items/11")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isNotFound());
     }
 
@@ -232,7 +232,7 @@ class ItemControllerTest {
                 post("/items/1/comment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(commentDto))
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isOk());
 
         Mockito.verify(itemService, Mockito.times(1)).addItemComment(isA(CommentDto.class), anyInt());

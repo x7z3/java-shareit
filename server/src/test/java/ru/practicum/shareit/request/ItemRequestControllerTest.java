@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.ShareItServer;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import java.time.LocalDateTime;
@@ -55,7 +55,7 @@ class ItemRequestControllerTest {
         mockMvc.perform(
                 post("/requests")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
                         .content(mapper.writeValueAsString(itemRequestDto))
         ).andExpect(status().isOk());
 
@@ -68,7 +68,7 @@ class ItemRequestControllerTest {
 
         mockMvc.perform(
                 get("/requests")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isOk());
 
         Mockito.verify(itemRequestService, times(1)).getItemRequests(1);
@@ -80,7 +80,7 @@ class ItemRequestControllerTest {
 
         mockMvc.perform(
                 get("/requests/all")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
                         .queryParam("from", "1")
                         .queryParam("size", "10")
         ).andExpect(status().isOk());
@@ -94,7 +94,7 @@ class ItemRequestControllerTest {
 
         mockMvc.perform(
                 get("/requests/1")
-                        .header(ShareItApp.X_SHARER_USER_ID_HEADER_NAME, 1)
+                        .header(ShareItServer.X_SHARER_USER_ID_HEADER_NAME, 1)
         ).andExpect(status().isOk());
 
         Mockito.verify(itemRequestService, times(1)).getItemRequest(1, 1);

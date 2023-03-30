@@ -8,25 +8,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>shareit-server</artifactId>
+    <artifactId>shareit-gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>ShareIt Server</name>
+    <name>ShareIt Gateway</name>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
@@ -35,15 +25,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
 
         <dependency>
@@ -70,23 +58,8 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>coverage</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

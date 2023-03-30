@@ -2,7 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.ShareItServer;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.exception.XSharerUserIdHeaderNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -20,7 +20,7 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(
             @RequestBody ItemDto itemDto,
-            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItServer.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         itemDto.setOwnerId(sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new));
         return itemService.createItem(itemDto);
@@ -35,7 +35,7 @@ public class ItemController {
     public ItemDto patchItem(
             @PathVariable("id") int id,
             @RequestBody ItemDto itemDto,
-            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItServer.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
     ) {
         itemDto.setId(id);
         itemDto.setOwnerId(sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new));
@@ -43,14 +43,14 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllItems(@RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Integer sharerUserId) {
+    public List<ItemDto> getAllItems(@RequestHeader(value = ShareItServer.X_SHARER_USER_ID_HEADER_NAME) Integer sharerUserId) {
         return itemService.getAllItems(sharerUserId);
     }
 
     @GetMapping("/{id}")
     public ItemDto getItem(
             @PathVariable("id") int itemId,
-            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Integer sharerUserId
+            @RequestHeader(value = ShareItServer.X_SHARER_USER_ID_HEADER_NAME) Integer sharerUserId
     ) {
         return itemService.getItem(itemId, sharerUserId);
     }
@@ -66,11 +66,10 @@ public class ItemController {
     public CommentDto addItemComment(
             @PathVariable Integer itemId,
             @RequestBody CommentDto commentDto,
-            @RequestHeader(value = ShareItApp.X_SHARER_USER_ID_HEADER_NAME) Optional<Integer> sharerUserId
+            @RequestHeader(value = ShareItServer.X_SHARER_USER_ID_HEADER_NAME) Integer sharerUserId
     ) {
         commentDto.setItemId(itemId);
         commentDto.setCreated(LocalDateTime.now());
-        Integer userId = sharerUserId.orElseThrow(XSharerUserIdHeaderNotFoundException::new);
-        return itemService.addItemComment(commentDto, userId);
+        return itemService.addItemComment(commentDto, sharerUserId);
     }
 }

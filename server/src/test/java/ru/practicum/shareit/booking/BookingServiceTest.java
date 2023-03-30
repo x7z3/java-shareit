@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.exception.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.ShareItException;
 import ru.practicum.shareit.item.ItemRepository;
