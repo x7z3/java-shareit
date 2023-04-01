@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Repository;
@@ -57,7 +58,8 @@ public class ItemRepositoryImpl extends SimpleJpaRepository<Item, Integer> imple
 
     @Override
     public List<Item> getAll(Integer sharerUserId) {
-        return super.findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("owner"), sharerUserId));
+        return super.findAll((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("owner"),
+                sharerUserId), Sort.by("id").ascending());
     }
 
     @Override
@@ -86,7 +88,7 @@ public class ItemRepositoryImpl extends SimpleJpaRepository<Item, Integer> imple
     @Override
     public List<Item> getItemByRequest(ItemRequest itemRequest) {
         return findAll((root, query, criteriaBuilder) ->
-            criteriaBuilder.equal(root.get("itemRequest"), itemRequest));
+                criteriaBuilder.equal(root.get("itemRequest"), itemRequest));
     }
 
     private Item findItemById(Integer itemId) {

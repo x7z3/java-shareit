@@ -96,6 +96,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addItemComment(CommentDto commentDto, Integer userId) {
         Integer itemId = commentDto.getItemId();
         throwIfUserDidntBookItem(itemId, userId);
