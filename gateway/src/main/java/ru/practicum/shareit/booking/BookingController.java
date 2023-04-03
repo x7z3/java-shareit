@@ -82,7 +82,10 @@ public class BookingController {
 	}
 
 	private static BookingState getBookingStateOrThrow(String stateParam) {
-		return BookingState.from(stateParam)
-				.orElseThrow(() -> new IllegalArgumentException("Unknown state: " + stateParam));
+		try {
+			return BookingState.valueOf(stateParam.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			throw new IllegalArgumentException("Unknown state: " + stateParam, e);
+		}
 	}
 }
